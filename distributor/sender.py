@@ -22,33 +22,33 @@ def generate_data_for_sending(sending_data, files, step):
 
 
 def split_task(data, files, task_size):
-    number_cells = task_size ** 2
+    total_scope_task = task_size ** 2
     average_reception_time = 0.5  # сек. Время передачи подзадачи
     average_calculation_time = 3.5  # сек. Время вычисления
     average_dispatch_time = 1  # сек. Время отправки ответа
 
-    scope_subtask = (  # Объем подзадачи (кол-во ячеек)
-            number_cells
+    scope_subtask = (  # Объем подзадачи
+            total_scope_task
             /
             (average_reception_time + average_calculation_time + average_dispatch_time))
-    scope_subtask = int(scope_subtask + 0.5)  # Округление до целого
+    scope_subtask = int(scope_subtask + 0.5)
     list_subtask = []
-    curr_row = 0
-    curr_cell = 0
+    second_init_step = 0
+    second_final_step = 0
     step = 0
 
-    while number_cells > 0:
-        last_row = curr_row
-        curr_row = math.ceil((curr_cell + scope_subtask) / task_size)
-        last_col = curr_cell
-        curr_cell += scope_subtask - 1
-        number_cells -= scope_subtask
-        if number_cells < task_size:
-            curr_cell += number_cells
-            number_cells -= scope_subtask
-        list_subtask.append(f'{last_row}-{curr_row};{last_col}-{curr_cell}')
+    while total_scope_task > 0:
+        first_init_step = second_init_step
+        second_init_step = math.ceil((second_final_step + scope_subtask) / task_size)
+        first_final_step = second_final_step
+        second_final_step += scope_subtask - 1
+        total_scope_task -= scope_subtask
+        if total_scope_task < task_size:
+            second_final_step += total_scope_task
+            total_scope_task -= scope_subtask
+        list_subtask.append(f'{first_init_step}-{second_init_step};{first_final_step}-{second_final_step}')
         step += 1
-        curr_cell += 1
+        second_final_step += 1
         subtask_parameters = generate_data_for_sending(data, files, list_subtask[-1])
         requests.get('http://localhost:5001/newTask', json=subtask_parameters)
     return list_subtask
