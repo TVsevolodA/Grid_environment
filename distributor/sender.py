@@ -24,7 +24,7 @@ def generate_data_for_sending(sending_data, files, step):
 def split_task(data, files, task_size):
     total_scope_task = task_size ** 2
     average_reception_time = 0.5  # сек. Время передачи подзадачи
-    average_calculation_time = 3.5  # сек. Время вычисления
+    average_calculation_time = math.e * task_size  # сек. Время вычисления math.e ** (task_size**0.5)
     average_dispatch_time = 1  # сек. Время отправки ответа
 
     scope_subtask = (  # Объем подзадачи
@@ -39,7 +39,7 @@ def split_task(data, files, task_size):
 
     while total_scope_task > 0:
         first_init_step = second_init_step
-        second_init_step = math.ceil((second_final_step + scope_subtask) / task_size)
+        second_init_step = (second_final_step + scope_subtask) // task_size#math.ceil((second_final_step + scope_subtask) / task_size)
         first_final_step = second_final_step
         second_final_step += scope_subtask - 1
         total_scope_task -= scope_subtask

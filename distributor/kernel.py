@@ -16,7 +16,7 @@ flag_starting_position = True
 10 - 724 решения, 1553.4716844558716 секунд (26 минут)
 """
 
-# ['0', '2', '0', '12'], ['0', '1', '0', '2']
+# ['0', '2', '0', '12'], ['0', '0', '0', '1']
 DIMENSION = int(sys.argv[1])         # Размер поля
 QUEEN_POSITIONS = ast.literal_eval(sys.argv[2].replace(' ', ''))   # Позиции ферзей [0,0]
 CELLS_FOR_PASSAGE = re.split(';|-', sys.argv[3])   # Ячейки, которые необходимо пройти 1-2;4-18;
