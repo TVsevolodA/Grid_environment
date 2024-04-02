@@ -1,8 +1,11 @@
+import os
 import threading
 from time import sleep
 
 import socketio
 import subprocess
+
+from dotenv import load_dotenv
 
 sio = socketio.Client()
 
@@ -47,7 +50,9 @@ def disconnect():
     print('Отключились от сервера')
 
 
-sio.connect('http://localhost:5001')
+load_dotenv()
+BROKER = os.getenv('BROKER')
+sio.connect(BROKER)
 availability = threading.Thread(target=sending_status)
 availability.start()
 sio.emit('submit_task')
