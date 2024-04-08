@@ -21,25 +21,48 @@ def generate_data_for_sending(sending_data, files, step):
     return data_to_send
 
 
+def fewer_location(num_cells, N):
+    return math.factorial(num_cells) / (math.factorial(N) * math.factorial(num_cells - N))
+
+
 def split_task(data, files, task_size):
     total_scope_task = task_size ** 2
-    average_reception_time = 0.5  # сек. Время передачи подзадачи
-    average_calculation_time = math.e * task_size  # сек. Время вычисления math.e ** (task_size**0.5)
-    average_dispatch_time = 1  # сек. Время отправки ответа
+    # average_reception_time = 0.5  # сек. Время передачи подзадачи
+    # average_calculation_time = math.e * math.factorial(task_size)  # сек. Время вычисления math.e ** (task_size**0.5)
+    # average_dispatch_time = 1  # сек. Время отправки ответа
+    #
+    # scope_subtask = (  # Объем подзадачи
+    #         total_scope_task
+    #         /
+    #         (average_reception_time + average_calculation_time + average_dispatch_time))
+    # scope_subtask = int(scope_subtask + 1)
+    tmp_num_cells = total_scope_task
+    list_permutations = []
+    iter = 1
+    while tmp_num_cells >= task_size:
+        list_permutations.append(fewer_location(tmp_num_cells, task_size))
+        tmp_num_cells -= 1
 
-    scope_subtask = (  # Объем подзадачи
-            total_scope_task
-            /
-            (average_reception_time + average_calculation_time + average_dispatch_time))
-    scope_subtask = int(scope_subtask + 0.5)
     list_subtask = []
     second_init_step = 0
     second_final_step = 0
     step = 0
 
     while total_scope_task > 0:
+        scope_subtask = 1
+        if step > 0:
+            last_count_combinations = list_permutations[0]
+            current_count_combinations = 0
+            while current_count_combinations < last_count_combinations and iter < len(list_permutations):
+                current_count_combinations += list_permutations[iter]
+                iter += 1
+                if iter == len(list_permutations):
+                    iter += task_size ** 2 - iter
+            scope_subtask = iter - step
+            step = iter
+
         first_init_step = second_init_step
-        second_init_step = (second_final_step + scope_subtask) // task_size#math.ceil((second_final_step + scope_subtask) / task_size)
+        second_init_step = (second_final_step + scope_subtask) // task_size
         first_final_step = second_final_step
         second_final_step += scope_subtask - 1
         total_scope_task -= scope_subtask

@@ -3,6 +3,7 @@ import copy
 import sys
 import ast
 import re
+
 iter_range = 0  # Сколько ячеек прошли
 last_value_col = {}
 flag_starting_position = True
@@ -16,10 +17,10 @@ flag_starting_position = True
 10 - 724 решения, 1553.4716844558716 секунд (26 минут)
 """
 
-# ['0', '2', '0', '12'], ['0', '1', '0', '2']
-DIMENSION = int(sys.argv[1])         # Размер поля
-QUEEN_POSITIONS = ast.literal_eval(sys.argv[2].replace(' ', ''))   # Позиции ферзей [0,0]
-CELLS_FOR_PASSAGE = re.split(';|-', sys.argv[3])   # Ячейки, которые необходимо пройти 1-2;4-18;
+# ['0', '2', '0', '12'], ['0', '0', '0', '1']
+DIMENSION = int(sys.argv[1])  # Размер поля
+QUEEN_POSITIONS = ast.literal_eval(sys.argv[2].replace(' ', ''))  # Позиции ферзей [0,0]
+CELLS_FOR_PASSAGE = re.split(';|-', sys.argv[3])  # Ячейки, которые необходимо пройти 1-2;4-18;
 maximumNumberQueens = len(QUEEN_POSITIONS)
 solutionCounter = 0  # Количество расстановок
 placementOptions = []  # Варианты расстановок
@@ -79,11 +80,6 @@ def solutionGenerator(positions, row):
         return
     if len(positions) < maximumNumberQueens and row == DIMENSION:
         return
-    # global solutionCounter
-    # if row == DIMENSION:
-    #     solutionCounter += 1
-    #     placementOptions.append(copy.deepcopy(positions))
-    #     return
 
     # Условие для входа
     starting_position = 0
@@ -113,6 +109,8 @@ def solutionGenerator(positions, row):
 Получить индекс следующей свободной строки
 """
 numRows = [r for r in range(DIMENSION)]
+
+
 def getNextRow(arrangements=[], currentRow=0):
     arrangementsRow = sorted([x[0] for x in arrangements])
     occupiedRows = list(set(arrangementsRow))
@@ -127,60 +125,7 @@ def getNextRow(arrangements=[], currentRow=0):
     return DIMENSION
 
 
-# solutionGenerator(QUEEN_POSITIONS, 0)
-solutionGenerator(QUEEN_POSITIONS, getNextRow(QUEEN_POSITIONS, START_LINE))  # 0
+solutionGenerator(QUEEN_POSITIONS, getNextRow(QUEEN_POSITIONS, START_LINE))
 print(maximumNumberQueens)
-# print(f'Удалось обнаружить {solutionCounter} решений.\nВот их список:')
 for _, solution in enumerate(placementOptions):
     print(solution)
-
-"""
-import copy
-
-DIMENSION = 4  # Размер поля
-QUEEN_POSITIONS = []  # Позиции ферзей
-maximumNumberQueens = len(QUEEN_POSITIONS)
-solutionCounter = 0  # Количество расстановок
-placementOptions = []  # Варианты расстановок
-
-def checkingPosition(positions, newPosition):
-    for _, position in enumerate(positions):
-
-        # Проверяем вертикаль
-        if position[1] == newPosition[1]:
-            return False
-
-        # Проверяем горизонталь
-        elif position[0] == newPosition[0]:
-            return False
-
-        # Проверяем диагональ
-        else:
-            rowDiff = position[0] - newPosition[0]
-            colDiff = position[1] - newPosition[1]
-            intersection = abs(rowDiff / colDiff) == 1
-            if intersection:
-                return False
-    return True
-
-
-def solutionGenerator(positions, row):
-    global solutionCounter
-    if row == DIMENSION:
-        solutionCounter += 1
-        placementOptions.append(copy.deepcopy(positions))
-        return
-
-    for column in range(DIMENSION):
-        startingPosition = [row, column]  # Начальная позиция нового ферзя
-        if checkingPosition(positions, startingPosition):  # Проверяем, что новая позиция еще не под ударом
-            positions.append(startingPosition)
-            solutionGenerator(positions, row + 1)
-            positions.pop()
-
-
-solutionGenerator(QUEEN_POSITIONS, 0)
-print(f'Удалось обнаружить {solutionCounter} решений.\nВот их список:')
-for index, solution in enumerate(placementOptions):
-    print(index, ': ', solution)
-"""
